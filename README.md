@@ -75,7 +75,6 @@ For better resuls you can normalize your data. to do so you create the Matcher l
 the normalizer uses a Map to replaces the Key with the value. Note that you can use Regex too. 
 
 # More Information:
-+ the code will be optimized before first release (end of 05.2020)
 + feel free to leave some feedback and critics
 + this code uses the library: 
 org.apache.airavata for the levenshtein distance
