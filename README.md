@@ -1,14 +1,14 @@
 # DataMatcher
-Matching of Objects using levenshtein distance
+#### Matching of objects using levenshtein distance
 
-this code allows you to match
+This code allows you to match
 
 - `String` to `List<String>`
 - `String` to `List<Object>`
 - `Object` to `List<Object>`
 
-returns the matched Object
-and creates a Score
+ returns the matched Object
+ and creates a Score %
 
 ## Setup
 
@@ -62,6 +62,8 @@ Object matchedObject = matcher.matchObjectWithObjectList(myObject,listOfPossible
 //score of current match in % average off all fields
 score = matcher.getMatchPercentage()
 ```
+#### More examples
+For more examples look in the Tests (src/test/java/MatcherTest.java)
 
 ### Normalizer
 For better resuls you can normalize your data. to do so you create the Matcher like this:
@@ -71,3 +73,5 @@ For better resuls you can normalize your data. to do so you create the Matcher l
     matcher = new Matcher(normalizer);
 ```
 the normalizer uses a Map to replaces the Key with the value. Note that you can use Regex too. 
+
+
