@@ -63,7 +63,9 @@ Object matchedObject = matcher.matchObjectWithObjectList(myObject,listOfPossible
 score = matcher.getMatchPercentage()
 ```
 #### More examples
-For more examples look in the Tests (src/test/java/MatcherTest.java)
+For more examples look in the Tests 
+(src/test/java/MatcherTest.java)
+https://github.com/Fabio-Calo/DataMatcher/blob/main/src/test/java/MatcherTest.java
 
 ### Normalizer
 For better resuls you can normalize your data. to do so you create the Matcher like this:
