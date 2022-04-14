@@ -1,5 +1,5 @@
 # DataMatcher
-#### Matching of diffrent objects using levenshtein distance
+ Matching of diffrent objects using levenshtein distance
 #### Java library
 This library allows you to match
 
@@ -64,8 +64,8 @@ score = matcher.getMatchPercentage()
 ```
 #### More examples
 For more examples look in the Tests 
-(src/test/java/MatcherTest.java)
-https://github.com/Fabio-Calo/DataMatcher/blob/main/src/test/java/MatcherTest.java
++ src/test/java/MatcherTest.java
++ https://github.com/Fabio-Calo/DataMatcher/blob/main/src/test/java/MatcherTest.java
 
 ### Normalizer
 For better resuls you can normalize your data. to do so you create the Matcher like this:
@@ -74,7 +74,7 @@ For better resuls you can normalize your data. to do so you create the Matcher l
     Normalizer normalizer = new Normalizer(Map.of("@+\\X*",""));
     matcher = new Matcher(normalizer);
 ```
-the normalizer uses a Map to replaces the Key with the value. Note that you can use Regex too. 
+The normalizer uses a Map to replaces the key with the value. Note that you can use Regex too. 
 
 # More Information:
 + feel free to leave some feedback and critics
