@@ -1,7 +1,7 @@
 # DataMatcher
-#### Matching of objects using levenshtein distance
-
-This code allows you to match
+ Matching of diffrent objects using levenshtein distance
+#### Java library
+This library allows you to match
 
 - `String` to `List<String>`
 - `String` to `List<Object>`
@@ -63,7 +63,9 @@ Object matchedObject = matcher.matchObjectWithObjectList(myObject,listOfPossible
 score = matcher.getMatchPercentage()
 ```
 #### More examples
-For more examples look in the Tests (src/test/java/MatcherTest.java)
+For more examples look in the Tests 
++ src/test/java/MatcherTest.java
++ https://github.com/Fabio-Calo/DataMatcher/blob/main/src/test/java/MatcherTest.java
 
 ### Normalizer
 For better resuls you can normalize your data. to do so you create the Matcher like this:
@@ -72,10 +74,9 @@ For better resuls you can normalize your data. to do so you create the Matcher l
     Normalizer normalizer = new Normalizer(Map.of("@+\\X*",""));
     matcher = new Matcher(normalizer);
 ```
-the normalizer uses a Map to replaces the Key with the value. Note that you can use Regex too. 
+The normalizer uses a Map to replaces the key with the value. Note that you can use Regex too. 
 
 # More Information:
-+ the code will be optimized before first release (end of 05.2020)
 + feel free to leave some feedback and critics
 + this code uses the library: 
 org.apache.airavata for the levenshtein distance
