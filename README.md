@@ -1,7 +1,7 @@
 # DataMatcher
-#### Matching of objects using levenshtein distance
-
-This code allows you to match
+#### Matching of diffrent objects using levenshtein distance
+#### Java library
+This library allows you to match
 
 - `String` to `List<String>`
 - `String` to `List<Object>`
