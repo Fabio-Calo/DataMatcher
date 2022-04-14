@@ -6,13 +6,13 @@ import matcher.MatchWith;
 @Data
 public class AdminObject {
 
-  int id;
+
+  @MatchWith
   String adminName;
   String companyEMail;
   String privateEMail;
 
-  public AdminObject(int id, String name, String companyEMail, String privateEMail) {
-    this.id = id;
+  public AdminObject( String name, String companyEMail, String privateEMail) {
     this.adminName = name;
     this.companyEMail = companyEMail;
     this.privateEMail = privateEMail;

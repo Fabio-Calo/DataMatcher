@@ -1,6 +1,6 @@
 import matcher.Matcher;
 import matcher.Normalizer;
-import matcher.exception.FieldNotAnnotatedException;
+import matcher.exception.MatchingException;
 import objects.AdminObject;
 import objects.UserObject;
 import org.junit.jupiter.api.Test;
@@ -30,14 +30,14 @@ class MatcherTest {
   }
 
   @Test
-  void  shouldMatchStringWithAListOfObject() throws IllegalAccessException, FieldNotAnnotatedException {
+  void  shouldMatchStringWithAListOfObject() throws IllegalAccessException, MatchingException {
 
     var listOfPossibleSolution =
         List.of(
-            new UserObject(1,"Mark","mark@mail.com"),
-            new UserObject(2,"Clark","klark@gmail.com"),
-            new UserObject(4,"Mars","mars@man.com"),
-            new UserObject(3,"Ben","ben@dover.com"));
+            new UserObject("Mark","mark@mail.com"),
+            new UserObject("Clark","clark@gmail.com"),
+            new UserObject("Mars","mars@man.com"),
+            new UserObject("Ben","ben@dover.com"));
 
     var myName = "Mars";
     var matchedUser =  matcher.matchStringWithObjectList(myName,listOfPossibleSolution);
@@ -47,16 +47,33 @@ class MatcherTest {
   }
 
   @Test
-  void  shouldMatchObjectWithAListOfObject() throws FieldNotAnnotatedException, NoSuchFieldException, IllegalAccessException {
+  void  shouldMatchStringWithAListOfObjectNoPrimary() throws IllegalAccessException, MatchingException {
 
     var listOfPossibleSolution =
         List.of(
-            new UserObject(1,"Mark","mark@mail.com"),
-            new UserObject(2,"Clark","clark@gmail.com"),
-            new UserObject(4,"Mars","mars@man.com"),
-            new UserObject(3,"Ben","ben@dover.com"));
+            new AdminObject("Mark","mark@mail.com","Mo@me.com"),
+            new AdminObject("Clark","clark@gmail.com","clk@amg.com"),
+            new AdminObject("Mars","mars@man.com","mars@solar.net"),
+            new AdminObject("Ben","ben@dover.com","ben@d.it"));
 
-    var myAdmin = new AdminObject(1,"Clark","clark@sov.com","clark@gmail.com");
+    var myName = "Mars";
+    var matchedUser =  matcher.matchStringWithObjectList(myName,listOfPossibleSolution);
+
+    assertThat(matchedUser).isEqualTo((listOfPossibleSolution.get(2)));
+    assertThat((int)matcher.getMatchPercentage()).isEqualTo(100);
+  }
+
+  @Test
+  void  shouldMatchObjectWithAListOfObject() throws MatchingException, NoSuchFieldException, IllegalAccessException {
+
+    var listOfPossibleSolution =
+        List.of(
+            new UserObject("Mark","mark@mail.com"),
+            new UserObject("Clark","clark@gmail.com"),
+            new UserObject("Mars","mars@man.com"),
+            new UserObject("Ben","ben@dover.com"));
+
+    var myAdmin = new AdminObject("Clark","clark@sov.com","clark@gmail.com");
 
     var matchedUser = matcher.matchObjectWithObjectList(myAdmin,listOfPossibleSolution);
 
@@ -86,4 +103,6 @@ class MatcherTest {
     assertThat(matchedString).isEqualTo(listOfPossibleSolution.get(2));
     assertThat((int)matcher.getMatchPercentage()).isEqualTo(100);
   }
+
+
 }

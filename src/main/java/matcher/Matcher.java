@@ -1,6 +1,6 @@
 package matcher;
 
-import matcher.exception.FieldNotAnnotatedException;
+import matcher.exception.MatchingException;
 import org.apache.airavata.samples.LevenshteinDistanceService;
 
 import java.lang.annotation.Annotation;
@@ -55,23 +55,23 @@ public class Matcher {
      * Returns the matched object.
      * You have to annotate the object in the listOfPossibleSolutions with @MatchWith. If there are multiple @MatchedWith you need to specify one as @MatchedWith(primary = true)
      * @param stringToMatch
-     * @param listOfPosibleSolutions
+     * @param listOfPossibleSolutions
      * @return
      * @throws IllegalAccessException
-     * @throws FieldNotAnnotatedException
+     * @throws MatchingException
      */
-    public Object matchStringWithObjectList(String stringToMatch, List listOfPosibleSolutions) throws IllegalAccessException, FieldNotAnnotatedException {
+    public Object matchStringWithObjectList(String stringToMatch, List listOfPossibleSolutions) throws IllegalAccessException, MatchingException {
         matchPercentage = 0;
         Object solution = null;
 
-        if (listOfPosibleSolutions.isEmpty()) {
+        if (!listOfPossibleSolutions.isEmpty()) {
 
             //List for saving all annotated fields
             List<Field> tmpFields = new ArrayList<>();
             //save primary fields
             Field primary = null;
             //getting all fields
-            var fields = listOfPosibleSolutions.get(0).getClass().getDeclaredFields();
+            var fields = listOfPossibleSolutions.get(0).getClass().getDeclaredFields();
 
             //check if Field is annotated
             for (var field: fields) {
@@ -80,6 +80,9 @@ public class Matcher {
                     tmpFields.add(field);
                     //check if primary
                     if(mw.primary()) {
+                        if (primary != null){
+                            throw new MatchingException("There can only be one primary");
+                        }
                         primary=field;
                     }
                 }
@@ -91,7 +94,7 @@ public class Matcher {
             //if there is a primary field
             if(primary != null){
                 //loop each possible solution
-                for (var solutions:listOfPosibleSolutions) {
+                for (var solutions:listOfPossibleSolutions) {
                     //get String value of field
                     primary.setAccessible(true);
                     var possibleSolution = primary.get(solutions).toString();
@@ -104,7 +107,7 @@ public class Matcher {
             }
             return solution;
         }
-        throw new FieldNotAnnotatedException("No field annotated. missing proper annotation use @MatchWith or set primary to true. \nNote that only one field should be primary!");
+        throw new MatchingException("No field annotated. missing proper annotation use @MatchWith or set primary to true. \nNote that only one field should be primary!");
     }
 
     /***
@@ -113,15 +116,15 @@ public class Matcher {
      * @param object
      * @param listOfPossibleSolutions
      * @return
-     * @throws FieldNotAnnotatedException
+     * @throws MatchingException
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
-    public Object matchObjectWithObjectList(Object object, List listOfPossibleSolutions) throws FieldNotAnnotatedException, IllegalAccessException, NoSuchFieldException {
+    public Object matchObjectWithObjectList(Object object, List listOfPossibleSolutions) throws MatchingException, IllegalAccessException, NoSuchFieldException {
         matchPercentage = 0.;
         Object solution = null;
 
-        if (listOfPossibleSolutions.isEmpty()) {
+        if (!listOfPossibleSolutions.isEmpty()) {
 
             //List for saving all annotated fields
             List<List<Object>> fieldsToMatchToObject = new ArrayList<>();
@@ -136,10 +139,8 @@ public class Matcher {
                 if (a instanceof MatchWith mw) {
 
                     var fieldToMatch = (mw.field());
-                    if (fieldToMatch == null) throw new FieldNotAnnotatedException("field: "+field.getName()+" is missing proper annotation");
+                    if (fieldToMatch == null) throw new MatchingException("field: "+field.getName()+" is missing proper annotation");
                     fieldsToMatchToObject.add(List.of(field,(mw.field())));
-
-
                 }
             }
             for (var solutions:listOfPossibleSolutions) {
@@ -171,7 +172,7 @@ public class Matcher {
 
             return solution;
         }
-        return new NullPointerException("No field annotated. missing proper annotation use @MatchWith or set field to the name of the field from the other object. \nNote that there is only a one to one match. Don't assign multiple fields to the same!");
+        throw  new MatchingException("No field annotated. missing proper annotation use @MatchWith or set field to the name of the field from the other object. \nNote that there is only a one to one match. Don't assign multiple fields to the same!");
     }
 
     /***
