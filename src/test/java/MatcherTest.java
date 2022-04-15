@@ -83,6 +83,44 @@ class MatcherTest {
   }
 
   @Test
+  void  shouldMatchObjectWithAListOfTheSameObject() throws MatchingException, NoSuchFieldException, IllegalAccessException {
+
+    var listOfPossibleSolution =
+        List.of(
+            new UserObject("Mark","mark@mail.com"),
+            new UserObject("Clark","clark@gmail.com"),
+            new UserObject("Mars","mars@man.com"),
+            new UserObject("Ben","ben@dover.com"));
+
+    var myUser = new UserObject("Clark","clark@gmail.com");
+
+    var matchedUser = matcher.matchObjectWithObjectList(myUser,listOfPossibleSolution);
+
+    assertThat(matchedUser).isEqualTo((listOfPossibleSolution.get(1)));
+    assertThat((int)matcher.getMatchPercentage()).isEqualTo(100);
+
+  }
+
+  @Test
+  void shouldMatchObjectWithObject() throws MatchingException {
+    var myUser = new UserObject("Kevin","kwin@gmail.com");
+    var myAdmin = new AdminObject("Kevin","kevin@company.com","kwin@gmail.com");
+
+    double matchedUser = matcher.matchObjectWithObject(myAdmin,myUser);
+
+    assertThat((int)matchedUser).isEqualTo(100);
+  }
+  @Test
+  void shouldMatchObjectWithTheSameObject() throws MatchingException {
+    var myUser = new UserObject("Kevin","kwin@gmail.com");
+    var myOtherUser = new UserObject("Kevin","kwin@gmail.com");
+
+    double matchedUser = matcher.matchObjectWithObject(myOtherUser,myUser);
+
+    assertThat((int)matchedUser).isEqualTo(100);
+  }
+
+  @Test
   void  shouldNormalizeTheMatching(){
 
     var listOfPossibleSolution = List.of("noreply@no-service.com","second@email.com","meetme@meet.net","mymail@yourmail.com");

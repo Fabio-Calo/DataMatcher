@@ -1,6 +1,7 @@
 package matcher;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Normalizer {
@@ -22,6 +23,6 @@ public class Normalizer {
     for (var change : changes.entrySet()){
      string = string.replaceAll(change.getKey(),change.getValue());
     }
-    return string;
+    return string.toUpperCase();
   }
 }
