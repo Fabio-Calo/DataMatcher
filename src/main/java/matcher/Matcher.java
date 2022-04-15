@@ -205,13 +205,21 @@ public class Matcher {
         return this.matchPercentage;
     }
 
+
+    /***
+     * Returns match percentage of two objects
+     * @param object
+     * @param objectToMatch
+     * @return
+     * @throws MatchingException
+     */
     public double matchObjectWithObject(Object object, Object objectToMatch) throws MatchingException {
 
-    //List for saving all annotated fields
-    List<List<Object>> fieldsToMatchToObject = new ArrayList<>();
+        //List for saving all annotated fields
+        List<List<Object>> fieldsToMatchToObject = new ArrayList<>();
 
-    //getting all fields
-    var fieldsSolution = objectToMatch.getClass().getDeclaredFields();
+        //getting all fields
+        var fieldsSolution = objectToMatch.getClass().getDeclaredFields();
         //if objects are not the same
         if (!object.getClass().equals(objectToMatch.getClass())) {
             //check if Fields are annotated for solutions
@@ -225,40 +233,39 @@ public class Matcher {
                     fieldsToMatchToObject.add(List.of(field, fieldToMatch));
                 }
             }
-        }
-        else {
+        } else {
             for (var field : fieldsSolution) {
                 //only string fields
                 if (field.getType().equals(String.class)) {
                     fieldsToMatchToObject.add(List.of(field, field.getName()));
                 }
-        }
-
-
-
-        var solutionsPercentage = 0.;
-        int counter = 0;
-        for(var solutionField : fieldsToMatchToObject){
-            counter++;
-            var field = (Field) solutionField.get(0);
-            var matchWith= (String) solutionField.get(1);
-            field.setAccessible(true);
-            String solutionString = null;
-            try {
-                solutionString = field.get(objectToMatch).toString();
-                var objectField =  object.getClass().getDeclaredField(matchWith);
-                objectField.setAccessible(true);
-                var objectString = objectField.get(object).toString();
-                var currentPercentage = matchInPercentage(objectString, solutionString);
-                solutionsPercentage = (solutionsPercentage+currentPercentage)/counter;
-
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new MatchingException("field: "+field.getName()+" is not annotated properly used field ="+ (String) solutionField.get(1),e);
             }
-        }
-        return matchPercentage = solutionsPercentage;}
 
-    throw new MatchingException("Don't be funny you can't match objects");
+
+            var solutionsPercentage = 0.;
+            int counter = 0;
+            for (var solutionField : fieldsToMatchToObject) {
+                counter++;
+                var field = (Field) solutionField.get(0);
+                var matchWith = (String) solutionField.get(1);
+                field.setAccessible(true);
+                String solutionString = null;
+                try {
+                    solutionString = field.get(objectToMatch).toString();
+                    var objectField = object.getClass().getDeclaredField(matchWith);
+                    objectField.setAccessible(true);
+                    var objectString = objectField.get(object).toString();
+                    var currentPercentage = matchInPercentage(objectString, solutionString);
+                    matchPercentage = solutionsPercentage = (solutionsPercentage + currentPercentage) / counter;
+
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    throw new MatchingException("field: " + field.getName() + " is not annotated properly used field =" + (String) solutionField.get(1), e);
+                }
+            }
+            return solutionsPercentage;
+        }
+
+        throw new MatchingException("Don't be funny you can't match objects");
     }
 }
 
