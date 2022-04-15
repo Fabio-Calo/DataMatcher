@@ -1,5 +1,5 @@
 # DataMatcher
- Matching of diffrent objects using levenshtein distance
+ Matching of diffrent of same objects using levenshtein distance
 #### Java library
 This library allows you to match:
 
