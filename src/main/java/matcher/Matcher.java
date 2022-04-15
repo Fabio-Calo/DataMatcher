@@ -12,13 +12,12 @@ import java.util.Map;
 public class Matcher {
 
 
-
     private Normalizer normalizer;
     private double matchPercentage;
 
 
     public Matcher() {
-        this.normalizer = new Normalizer(Map.of(" ",""));
+        this.normalizer = new Normalizer(Map.of(" ", ""));
     }
 
     /***
@@ -48,7 +47,7 @@ public class Matcher {
                 solution = possibleSolution;
             }
         }
-        return  solution;
+        return solution;
     }
 
     /***
@@ -74,27 +73,27 @@ public class Matcher {
             var fields = listOfPossibleSolutions.get(0).getClass().getDeclaredFields();
 
             //check if Field is annotated
-            for (var field: fields) {
+            for (var field : fields) {
                 Annotation a = field.getAnnotation(MatchWith.class);
                 if (a instanceof MatchWith mw) {
                     tmpFields.add(field);
                     //check if primary
-                    if(mw.primary()) {
-                        if (primary != null){
+                    if (mw.primary()) {
+                        if (primary != null) {
                             throw new MatchingException("There can only be one primary");
                         }
-                        primary=field;
+                        primary = field;
                     }
                 }
             }
             //if there is only one annotated field proceed as if primary
-            if (tmpFields.size()==1){
+            if (tmpFields.size() == 1) {
                 primary = tmpFields.get(0);
             }
             //if there is a primary field
-            if(primary != null){
+            if (primary != null) {
                 //loop each possible solution
-                for (var solutions:listOfPossibleSolutions) {
+                for (var solutions : listOfPossibleSolutions) {
                     //get String value of field
                     primary.setAccessible(true);
                     var possibleSolution = primary.get(solutions).toString();
@@ -194,7 +193,7 @@ public class Matcher {
     public double matchInPercentage(String first, String second) {
         LevenshteinDistanceService ld = new LevenshteinDistanceService();
         var distance = ld.computeDistance(normalizer.normalize(first), normalizer.normalize(second));
-        return (1. - distance / Math.max(first.length() + 1., second.length() + 1.))*100.;
+        return (1. - distance / Math.max(first.length() + 1., second.length() + 1.)) * 100.;
     }
 
     /***
@@ -240,32 +239,31 @@ public class Matcher {
                     fieldsToMatchToObject.add(List.of(field, field.getName()));
                 }
             }
+        }
 
+        var solutionsPercentage = 0.;
+        int counter = 0;
+        for (var solutionField : fieldsToMatchToObject) {
+            counter++;
+            var field = (Field) solutionField.get(0);
+            var matchWith = (String) solutionField.get(1);
+            field.setAccessible(true);
+            String solutionString = null;
+            try {
+                solutionString = field.get(objectToMatch).toString();
+                var objectField = object.getClass().getDeclaredField(matchWith);
+                objectField.setAccessible(true);
+                var objectString = objectField.get(object).toString();
+                var currentPercentage = matchInPercentage(objectString, solutionString);
+                matchPercentage = solutionsPercentage = (solutionsPercentage + currentPercentage) / counter;
 
-            var solutionsPercentage = 0.;
-            int counter = 0;
-            for (var solutionField : fieldsToMatchToObject) {
-                counter++;
-                var field = (Field) solutionField.get(0);
-                var matchWith = (String) solutionField.get(1);
-                field.setAccessible(true);
-                String solutionString = null;
-                try {
-                    solutionString = field.get(objectToMatch).toString();
-                    var objectField = object.getClass().getDeclaredField(matchWith);
-                    objectField.setAccessible(true);
-                    var objectString = objectField.get(object).toString();
-                    var currentPercentage = matchInPercentage(objectString, solutionString);
-                    matchPercentage = solutionsPercentage = (solutionsPercentage + currentPercentage) / counter;
-
-                } catch (IllegalAccessException | NoSuchFieldException e) {
-                    throw new MatchingException("field: " + field.getName() + " is not annotated properly used field =" + (String) solutionField.get(1), e);
-                }
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                throw new MatchingException("field: " + field.getName() + " is not annotated properly used field =" + (String) solutionField.get(1), e);
             }
             return solutionsPercentage;
         }
-
-        throw new MatchingException("Don't be funny you can't match objects");
+        throw new MatchingException("Don't be funny you can't match null objects");
     }
 }
+
 
