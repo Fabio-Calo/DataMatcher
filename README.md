@@ -80,4 +80,5 @@ The normalizer uses a Map to replaces the key with the value. Note that you can 
 + feel free to leave some feedback and critics
 + this code uses the library: 
 org.apache.airavata for the levenshtein distance
++ this library uses reflection. I will create an alternative without using reflection. It will not be a library.
    
